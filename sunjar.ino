@@ -10,14 +10,23 @@ char password[32] = "";
 
 const char compile_date[] = __DATE__ " " __TIME__;
 
+#define LED_COUNT 5
+#define LED_PIN D6
+
+int wait = 0;
+int faderate = 40000;
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB);
 
 void setup() {
-setupSerial();
+  setupSerial();
+  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.show();            // Turn OFF all pixels ASAP
+  strip.setBrightness(100); // Set BRIGHTNESS to about 1/5 (max = 255)
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
+void loop()  {
+  sunrise();
+  sunset();
 }
 
 void setupSerial() {
