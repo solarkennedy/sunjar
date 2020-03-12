@@ -1,12 +1,4 @@
 #include <Adafruit_NeoPixel.h>
-#include <EEPROM.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-#include <WiFiUdp.h>
-#include <ArduinoOTA.h>
-
-char ssid[32] = "";
-char password[32] = "";
 
 const char compile_date[] = __DATE__ " " __TIME__;
 

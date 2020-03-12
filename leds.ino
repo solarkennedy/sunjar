@@ -8,7 +8,7 @@ void sunrise() {
     colorWipe (strip.Color(r, g, 0), 0);
     strip.show();
     delay (wait);
-    ArduinoOTA.handle();
+    wifiEvents();
   }
   delay (10000);
   colorWipe(strip.Color(0, 0, 0), 0);
@@ -23,7 +23,7 @@ void sunset() {
     colorWipe (strip.Color(r, g, 0), 0);
     strip.show();
     delay(wait);
-    ArduinoOTA.handle();
+
   }
   delay (10000);
   colorWipe(strip.Color(0, 0, 0), 0);
@@ -36,6 +36,6 @@ void colorWipe(uint32_t c, uint8_t wait) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
-    ArduinoOTA.handle();
+    wifiEvents();
   }
 }

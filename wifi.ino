@@ -1,3 +1,16 @@
+#include <EEPROM.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#include <WiFiUdp.h>
+#include <ArduinoOTA.h>
+
+char ssid[32] = "";
+char password[32] = "";
+
+void wifiEvents() {
+  ArduinoOTA.handle();
+}
+
 void wifiSetup() {
   loadCredentials();
 
@@ -14,7 +27,7 @@ void wifiSetup() {
     ESP.restart();
   }
   ArduinoOTA.setHostname("sunjar");
-  
+
   ArduinoOTA.onStart([]() {
     String type;
     if (ArduinoOTA.getCommand() == U_FLASH) {
