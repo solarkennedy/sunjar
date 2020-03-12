@@ -1,3 +1,17 @@
+#include <Adafruit_NeoPixel.h>
+
+#define LED_COUNT 5
+#define LED_PIN D6
+
+int wait = 0;
+int faderate = 40000;
+Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB);
+
+void setupStrip() {
+  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.show();            // Turn OFF all pixels ASAP
+  strip.setBrightness(255); // Set BRIGHTNESS to about 1/5 (max = 255)
+}
 
 void sunrise() {
   //start out off, fade up to first color orange (255, 80, 0)

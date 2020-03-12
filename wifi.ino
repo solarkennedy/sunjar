@@ -11,7 +11,7 @@ void wifiEvents() {
   ArduinoOTA.handle();
 }
 
-void wifiSetup() {
+void setupWifi() {
   loadCredentials();
 
   Serial.println("Booting");
