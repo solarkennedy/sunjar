@@ -24,7 +24,8 @@ CRGBPalette16 gPal;
 void setup() {
   setupSerial();
   setupStrip();
-  // setupWifi();
+  setupWifi();
+  syncTimeFromWifi();
 }
 
 
@@ -35,6 +36,7 @@ void loop()  {
   //EVERY_N_MILLISECONDS( 20 ) {
   //  gHue++;  // slowly cycle the "base color" through the rainbow
  // }
+  Serial.println(getCurrentTime());
 }
 
 void setupSerial() {
