@@ -1,16 +1,10 @@
-#include <Adafruit_NeoPixel.h>
 
-#define LED_COUNT 5
-#define LED_PIN D6
-
-int wait = 0;
-int faderate = 40000;
-Adafruit_NeoPixel strip(LED_COUNT, LED_PIN, NEO_GRB);
 
 void setupStrip() {
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.show();            // Turn OFF all pixels ASAP
-  strip.setBrightness(255); // Set BRIGHTNESS to about 1/5 (max = 255)
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
+  .setCorrection( TypicalLEDStrip );
+  FastLED.setBrightness(255);
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);
 }
 
 void sunrise() {
@@ -19,13 +13,13 @@ void sunrise() {
   {
     int g = map(i, 0, faderate, 0, 255);
     int r = map(i, 0, faderate, 0, 128);
-    colorWipe (strip.Color(r, g, 0), 0);
-    strip.show();
+    // colorWipe (strip.Color(r, g, 0), 0);
+    // strip.show();
     delay (wait);
     wifiEvents();
   }
   delay (10000);
-  colorWipe(strip.Color(0, 0, 0), 0);
+  // colorWipe(strip.Color(0, 0, 0), 0);
 }
 
 void sunset() {
@@ -34,22 +28,24 @@ void sunset() {
   {
     int g = map(i, 0, faderate, 0, 255);
     int r = map(i, 0, faderate, 0, 128);
-    colorWipe (strip.Color(r, g, 0), 0);
-    strip.show();
+    // colorWipe (strip.Color(r, g, 0), 0);
+    // strip.show();
     delay(wait);
 
   }
   delay (10000);
-  colorWipe(strip.Color(0, 0, 0), 0);
+  //  colorWipe(strip.Color(0, 0, 0), 0);
 }
 
 
 // Fill the dots one after the other with a color
-void colorWipe(uint32_t c, uint8_t wait) {
+/*
+  void colorWipe(uint32_t c, uint8_t wait) {
   for (uint16_t i = 0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, c);
     strip.show();
     delay(wait);
     wifiEvents();
   }
-}
+  }
+*/
