@@ -18,6 +18,8 @@ CRGB leds[NUM_LEDS];
 
 uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 
+CRGBPalette16 gPal;
+
 
 void setup() {
   setupSerial();
@@ -27,13 +29,12 @@ void setup() {
 
 
 void loop()  {
-  pacifica_loop();
+  softtwinkles();
   FastLED.show();
-  FastLED.delay(1000 / 120);
-  EVERY_N_MILLISECONDS( 20 ) {
-    gHue++;  // slowly cycle the "base color" through the rainbow
-  }
-
+  FastLED.delay(1000 / 60);
+  //EVERY_N_MILLISECONDS( 20 ) {
+  //  gHue++;  // slowly cycle the "base color" through the rainbow
+ // }
 }
 
 void setupSerial() {
@@ -45,4 +46,11 @@ void setupSerial() {
   const char compile_date[] = __DATE__ " " __TIME__;
   Serial.printf("ESP8266 Chip id = %08X\n", ESP.getChipId());
   Serial.printf("Sketch compiled %s\n", compile_date);
+}
+
+void setupStrip() {
+  FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
+  .setCorrection( TypicalLEDStrip );
+  FastLED.setBrightness(255);
+  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);
 }
