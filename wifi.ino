@@ -26,7 +26,9 @@ void setupWifi() {
     delay(5000);
     ESP.restart();
   }
-  ArduinoOTA.setHostname("sunjar");
+  char hostname[32];
+  sprintf(hostname, "sunjar_%08X", ESP.getChipId());
+  ArduinoOTA.setHostname(hostname);
 
   ArduinoOTA.onStart([]() {
     String type;

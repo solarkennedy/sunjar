@@ -8,7 +8,7 @@ FASTLED_USING_NAMESPACE
 int wait = 0;
 int faderate = 40000;
 
-#define DATA_PIN            6
+#define DATA_PIN            D6
 #define NUM_LEDS            5
 #define MAX_POWER_MILLIAMPS 500
 #define LED_TYPE            WS2812B
