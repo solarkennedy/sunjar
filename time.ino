@@ -89,3 +89,15 @@ int getCurrentMinute() {
 int getMinuteOfTheHour() {
   return MyTZ.minute();
 }
+
+int getYear() {
+  return MyTZ.year();
+}
+
+int getMonth() {
+  return MyTZ.month();
+}
+
+int getDay() { 
+  return MyTZ.day();
+}

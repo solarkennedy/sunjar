@@ -13,12 +13,12 @@ DEFINE_GRADIENT_PALETTE( Sunset_Real_gp ) {
 
 
 
-void sunrise() {
+void sunrise_pattern() {
   gPal = Sunset_Real_gp;
   ColorWaves(leds, NUM_LEDS, gPal);
 }
 
-void sunset() {
+void sunset_pattern() {
   fadeToBlackBy(leds, NUM_LEDS, 5);
 }
 
