@@ -34,10 +34,13 @@ double daylen, civlen;
 
 
 void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
   setupSerial();
   setupStrip();
   setupWifi();
   syncTimeFromWifi();
+  digitalWrite(LED_BUILTIN, HIGH);
 }
 
 

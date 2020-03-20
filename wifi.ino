@@ -23,7 +23,12 @@ void setupWifi() {
   Serial.println(password);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("Connection Failed! Rebooting...");
-    delay(5000);
+    for (int i = 0; i < 25; i++ ) {
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(100);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(100);
+    }
     ESP.restart();
   }
   char hostname[32];
