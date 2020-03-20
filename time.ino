@@ -90,6 +90,10 @@ int getMinuteOfTheHour() {
   return MyTZ.minute();
 }
 
+int getHour() {
+  return MyTZ.hour();
+}
+
 int getYear() {
   return MyTZ.year();
 }

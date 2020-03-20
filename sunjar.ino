@@ -28,9 +28,9 @@ String sunset;
 
 
 double daylen, civlen;
-  double rise, set, twilight;
-  int rs;
-  String string_rise, string_set, string_twilight;
+double rise, set, twilight;
+int rs;
+String string_rise, string_set, string_twilight;
 
 
 void setup() {
@@ -44,18 +44,39 @@ void setup() {
 }
 
 
+
+void figureOutWhatToShow() {
+  int brightness;
+  int h = getHour();
+  if (h >= 0 && h < 7) {
+    FastLED.setBrightness(0);
+  } else if (h >= 7 && h < 8) {
+    brightness = map(getMinuteOfTheHour(), 0, 59, 0, 255);
+    FastLED.setBrightness(brightness);
+    pacifica_loop();
+  } else if (h >= 8 && h < 21) {
+    FastLED.setBrightness(255);
+    confetti();
+  } else if (h >= 21 && h < 22) {
+    brightness = map(getMinuteOfTheHour(), 0, 59, 255, 0);
+    FastLED.setBrightness(brightness);
+    pacifica_loop();
+  } else {
+    FastLED.setBrightness(0);
+  }
+}
+
 void loop()  {
-  pacifica_loop();
+  figureOutWhatToShow();
   FastLED.show();
   FastLED.delay(1000 / 60);
   //EVERY_N_MILLISECONDS( 20 ) {
   //  gHue++;  // slowly cycle the "base color" through the rainbow
   // }
-    wifiEvents();
-
+  wifiEvents();
   EVERY_N_SECONDS( 30 ) {
-  Serial.println(getCurrentTime());
-  sunRiseSet();
+    Serial.println(getCurrentTime());
+    sunRiseSet();
   }
 }
 
@@ -84,16 +105,16 @@ void sunRiseSet () {
   Serial.println(longitude);
   Serial.println(latitude);
 
-  daylen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0/60.0, 1);
+  daylen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1);
   civlen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -6.0, 0);
-  rs = __sunriset__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0/60.0, 1,  &rise, &set );
+  rs = __sunriset__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1,  &rise, &set );
   //rise = rise + (config.timeZone / 10);
   //set = set + (config.timeZone / 10);
   /*
-  if (config.isDayLightSaving && summerTime(absoluteActualTime)) {
+    if (config.isDayLightSaving && summerTime(absoluteActualTime)) {
     rise += 1;
     set += 1;
-  }
+    }
   */
   string_rise = string_rs (rise);
   string_set = string_rs (set);
