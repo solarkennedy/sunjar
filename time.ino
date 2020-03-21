@@ -105,3 +105,19 @@ int getMonth() {
 int getDay() { 
   return MyTZ.day();
 }
+
+bool isItTheWeekend() {
+  if (MyTZ.weekday() == SATURDAY || MyTZ.weekday() == SUNDAY) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+int getWakeupHour() {
+  if (isItTheWeekend() == true) {
+    return 8;
+  } else {
+    return 7;
+  }
+}

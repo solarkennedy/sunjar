@@ -43,18 +43,18 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
-
-
 void figureOutWhatToShow() {
   int brightness;
   int h = getHour();
-  if (h >= 0 && h < 7) {
+  int wakeup_hour = getWakeupHour();
+  
+  if (h >= 0 && h < wakeup_hour) {
     FastLED.setBrightness(0);
-  } else if (h >= 7 && h < 8) {
+  } else if (h >= wakeup_hour && h < wakeup_hour + 1) {
     brightness = map(getMinuteOfTheHour(), 0, 59, 0, 255);
     FastLED.setBrightness(brightness);
     pacifica_loop();
-  } else if (h >= 8 && h < 21) {
+  } else if (h >= wakeup_hour + 1 && h < 21) {
     FastLED.setBrightness(255);
     confetti();
   } else if (h >= 21 && h < 22) {
