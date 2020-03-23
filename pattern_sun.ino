@@ -45,7 +45,7 @@ void ColorWaves( CRGB* ledarray, uint16_t numleds, CRGBPalette16& palette)
   uint16_t deltams = ms - sLastMillis ;
   sLastMillis  = ms;
   sPseudotime += deltams * msmultiplier;
-  sHue16 += deltams * beatsin88( 400, 5, 9);
+  sHue16 += deltams * beatsin88( 40, 5, 9);
   uint16_t brightnesstheta16 = sPseudotime;
 
   for ( uint16_t i = 0 ; i < numleds; i++) {

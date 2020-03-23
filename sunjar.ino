@@ -2,6 +2,11 @@
 #define POWER_DEBUG_PRINT 1
 #define FASTLED_INTERRUPT_RETRY_COUNT 1
 
+
+#define COOLING  20           // defines the level at which the lighting effect fades before a new "flame" generates
+#define SPARKING 20
+
+
 #include <FastLED.h>
 FASTLED_USING_NAMESPACE
 
@@ -10,7 +15,7 @@ int faderate = 40000;
 
 #define DATA_PIN            D6
 #define NUM_LEDS            5
-#define MAX_POWER_MILLIAMPS 500
+#define MAX_POWER_MILLIAMPS 50000
 #define LED_TYPE            WS2812B
 #define COLOR_ORDER         RGB
 
@@ -70,9 +75,6 @@ void loop()  {
   figureOutWhatToShow();
   FastLED.show();
   FastLED.delay(1000 / 60);
-  //EVERY_N_MILLISECONDS( 20 ) {
-  //  gHue++;  // slowly cycle the "base color" through the rainbow
-  // }
   wifiEvents();
   EVERY_N_SECONDS( 30 ) {
     Serial.println(getCurrentTime());
