@@ -49,23 +49,23 @@ void setup() {
 }
 
 void figureOutWhatToShow() {
-  int brightness;
-  int h = getHour();
+  uint8 brightness;
+  uint8 h = getHour();
   int wakeup_hour = getWakeupHour();
-  
+
   if (h >= 0 && h < wakeup_hour) {
     FastLED.setBrightness(0);
   } else if (h >= wakeup_hour && h < wakeup_hour + 1) {
-    brightness = map(getMinuteOfTheHour(), 0, 59, 0, 255);
+    brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 0, 255);
     FastLED.setBrightness(brightness);
     pacifica_loop();
   } else if (h >= wakeup_hour + 1 && h < 21) {
     FastLED.setBrightness(255);
-    confetti();
+    plasma();
   } else if (h >= 21 && h < 22) {
-    brightness = map(getMinuteOfTheHour(), 0, 59, 255, 0);
+    brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 255, 0);
     FastLED.setBrightness(brightness);
-    pacifica_loop();
+    flame_loop();
   } else {
     FastLED.setBrightness(0);
   }

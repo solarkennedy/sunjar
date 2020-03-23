@@ -78,31 +78,39 @@ void syncTimeFromWifi() {
   updateNTP();
 }
 
+void printTime() {
+  Serial.println("LocalTime (from RTC): " + MyTZ.dateTime(ISO8601));
+}
+
 uint32_t getCurrentTime() {
   return MyTZ.now();
 }
 
-int getCurrentMinute() {
+uint8_t getCurrentMinute() {
   return MyTZ.hour() * 60 + MyTZ.minute();
 }
 
-int getMinuteOfTheHour() {
+uint8_t getMinuteOfTheHour() {
   return MyTZ.minute();
 }
 
-int getHour() {
+uint8_t getSecond() {
+  return MyTZ.second();
+}
+
+uint8_t getHour() {
   return MyTZ.hour();
 }
 
-int getYear() {
+uint8_t getYear() {
   return MyTZ.year();
 }
 
-int getMonth() {
+uint8_t getMonth() {
   return MyTZ.month();
 }
 
-int getDay() { 
+uint8_t getDay() {
   return MyTZ.day();
 }
 
