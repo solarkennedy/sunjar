@@ -2,10 +2,8 @@
 #define POWER_DEBUG_PRINT 1
 #define FASTLED_INTERRUPT_RETRY_COUNT 1
 
-
 #define COOLING  20           // defines the level at which the lighting effect fades before a new "flame" generates
 #define SPARKING 20
-
 
 #include <FastLED.h>
 FASTLED_USING_NAMESPACE
@@ -31,12 +29,10 @@ String sunrise;
 String sunset;
 //String twilight;
 
-
 double daylen, civlen;
 double rise, set, twilight;
 int rs;
 String string_rise, string_set, string_twilight;
-
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -44,6 +40,7 @@ void setup() {
   setupSerial();
   setupStrip();
   setupWifi();
+  setupTouchSensor();
   syncTimeFromWifi();
   digitalWrite(LED_BUILTIN, HIGH);
 }
@@ -76,6 +73,9 @@ void loop()  {
   FastLED.show();
   FastLED.delay(1000 / 60);
   wifiEvents();
+  if (isTouched()) {
+    Serial.println("I got touched!");
+  }
   EVERY_N_SECONDS( 30 ) {
     Serial.println(getCurrentTime());
     sunRiseSet();
