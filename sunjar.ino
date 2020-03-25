@@ -28,11 +28,14 @@ long longitude = -122.4194;
 String sunrise;
 String sunset;
 //String twilight;
-
 double daylen, civlen;
 double rise, set, twilight;
 int rs;
 String string_rise, string_set, string_twilight;
+
+bool override_mode = false;
+int override_timer = 0;
+int override_duration = 3600;
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -45,27 +48,74 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
+uint8 getBrightnessOverride(uint8 original) {
+  if (override_timer != 0) {
+    EVERY_N_SECONDS( 1 ) {
+      override_timer--;
+    }
+  }
+  int b;
+  Serial.print("Override timer: ");
+  Serial.print(override_timer);
+  Serial.print("  Mode: "); Serial.println(override_mode);
+  if (override_timer == 0) {
+    b = original;
+  } else if (override_mode) {
+    if (override_timer > (override_duration - 60)) {
+      Serial.println(override_timer - (override_duration - 60));
+      b = map(override_timer - (override_duration - 60), 60, 0, int(original), 0);
+    } else {
+      b = 0;
+    }
+  } else {
+    // Fading back in
+    b = map(override_timer, 10, 0, 0, original);
+  }
+  Serial.print("Override brightness: ");
+  Serial.print(b);
+  Serial.print("  - original: ");
+  Serial.println(original);
+  return b;
+}
+
 void figureOutWhatToShow() {
   uint8 brightness;
+  uint8 final_brightness;
   uint8 h = getHour();
   int wakeup_hour = getWakeupHour();
 
   if (h >= 0 && h < wakeup_hour) {
-    FastLED.setBrightness(0);
+    final_brightness = getBrightnessOverride(0);
+    FastLED.setBrightness(final_brightness);
   } else if (h >= wakeup_hour && h < wakeup_hour + 1) {
     brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 0, 255);
-    FastLED.setBrightness(brightness);
+    final_brightness = getBrightnessOverride(brightness);
+    FastLED.setBrightness(final_brightness);
     pacifica_loop();
   } else if (h >= wakeup_hour + 1 && h < 21) {
-    FastLED.setBrightness(255);
+    final_brightness = getBrightnessOverride(255);
+    FastLED.setBrightness(final_brightness);
     plasma();
   } else if (h >= 21 && h < 22) {
     brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 255, 0);
-    FastLED.setBrightness(brightness);
+    final_brightness = getBrightnessOverride(brightness);
+    FastLED.setBrightness(final_brightness);
     flame_loop();
   } else {
-    FastLED.setBrightness(0);
+    final_brightness = getBrightnessOverride(0);
+    FastLED.setBrightness(final_brightness);
   }
+}
+
+void toggleOverride() {
+  if (override_timer == 0) {
+    // Toggling in
+    override_timer = 3600;
+  } else {
+    // Toggling out, give us some seconds to wakeup
+    override_timer = 10;
+  }
+  override_mode = !override_mode;
 }
 
 void loop()  {
@@ -75,10 +125,10 @@ void loop()  {
   wifiEvents();
   if (isTouched()) {
     Serial.println("I got touched!");
+    toggleOverride();
   }
-  EVERY_N_SECONDS( 30 ) {
-    Serial.println(getCurrentTime());
-    sunRiseSet();
+  EVERY_N_SECONDS( 3600 ) {
+    syncTimeFromWifi();
   }
 }
 
