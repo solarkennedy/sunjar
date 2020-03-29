@@ -61,15 +61,21 @@ uint8 getBrightnessOverride(uint8 original) {
   if (override_timer == 0) {
     b = original;
   } else if (override_mode) {
-    if (override_timer > (override_duration - 60)) {
-      Serial.println(override_timer - (override_duration - 60));
-      b = map(override_timer - (override_duration - 60), 60, 0, int(original), 0);
-    } else {
+    // The first 30 seconds of override, we fade down
+    if (override_timer > (override_duration - 30)) {
+      Serial.println(override_timer - (override_duration - 30));
+      b = map(override_timer - (override_duration - 30), 30, 0, int(original), 0);
+    } else { // after the first seconds of the override
       b = 0;
     }
-  } else {
-    // Fading back in
-    b = map(override_timer, 10, 0, 0, original);
+  } else { // override canceld
+    if (original == 0) {
+      // fading back to black
+      b = map(override_timer, 10, 0, 255, original);
+    } else {
+      // Fading back to whatever we had before
+      b = map(override_timer, 10, 0, 0, original);
+    }
   }
   Serial.print("Override brightness: ");
   Serial.print(b);
@@ -87,6 +93,7 @@ void figureOutWhatToShow() {
   if (h >= 0 && h < wakeup_hour) {
     final_brightness = getBrightnessOverride(0);
     FastLED.setBrightness(final_brightness);
+    pacifica_loop();
   } else if (h >= wakeup_hour && h < wakeup_hour + 1) {
     brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 0, 255);
     final_brightness = getBrightnessOverride(brightness);
@@ -104,6 +111,7 @@ void figureOutWhatToShow() {
   } else {
     final_brightness = getBrightnessOverride(0);
     FastLED.setBrightness(final_brightness);
+    flame_loop();
   }
 }
 

@@ -7,10 +7,12 @@ void setupTouchSensor() {
 }
 
 bool isTouched() {
-  bool s = touch_sensor.capacitiveSensor(30) > -2;
+  float t = touch_sensor.capacitiveSensor(30);
+  bool s = t > -2;
   if (touched == true && s == false) {
     touched = false;
     Serial.println("Finger Untouched!");
+    digitalWrite(LED_BUILTIN, HIGH);
     delay(100);
     return true;
   } else if (touched == true && s == true) {
@@ -18,6 +20,7 @@ bool isTouched() {
     return false;
   } else if (touched == false && s == true) {
     Serial.println("Finger applied!");
+    digitalWrite(LED_BUILTIN, LOW);
     delay(100);
     touched = true;
     return false;
