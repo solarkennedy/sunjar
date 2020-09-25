@@ -2,20 +2,21 @@
 #define POWER_DEBUG_PRINT 1
 #define FASTLED_INTERRUPT_RETRY_COUNT 1
 
-#define COOLING  20           // defines the level at which the lighting effect fades before a new "flame" generates
+#define COOLING 20 // defines the level at which the lighting effect fades before a new "flame" generates
 #define SPARKING 20
 
 #include <FastLED.h>
+
 FASTLED_USING_NAMESPACE
 
 int wait = 0;
 int faderate = 40000;
 
-#define DATA_PIN            D6
-#define NUM_LEDS            5
+#define DATA_PIN D6
+#define NUM_LEDS 5
 #define MAX_POWER_MILLIAMPS 50000
-#define LED_TYPE            WS2812B
-#define COLOR_ORDER         RGB
+#define LED_TYPE WS2812B
+#define COLOR_ORDER RGB
 
 CRGB leds[NUM_LEDS];
 
@@ -48,31 +49,46 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);
 }
 
-uint8 getBrightnessOverride(uint8 original) {
-  if (override_timer != 0) {
-    EVERY_N_SECONDS( 1 ) {
+uint8 getBrightnessOverride(uint8 original)
+{
+  if (override_timer != 0)
+  {
+    EVERY_N_SECONDS(1)
+    {
       override_timer--;
     }
   }
   int b;
   Serial.print("Override timer: ");
   Serial.print(override_timer);
-  Serial.print("  Mode: "); Serial.println(override_mode);
-  if (override_timer == 0) {
+  Serial.print("  Mode: ");
+  Serial.println(override_mode);
+  if (override_timer == 0)
+  {
     b = original;
-  } else if (override_mode) {
+  }
+  else if (override_mode)
+  {
     // The first 30 seconds of override, we fade down
-    if (override_timer > (override_duration - 30)) {
+    if (override_timer > (override_duration - 30))
+    {
       Serial.println(override_timer - (override_duration - 30));
       b = map(override_timer - (override_duration - 30), 30, 0, int(original), 0);
-    } else { // after the first seconds of the override
+    }
+    else
+    { // after the first seconds of the override
       b = 0;
     }
-  } else { // override canceld
-    if (original == 0) {
+  }
+  else
+  { // override canceld
+    if (original == 0)
+    {
       // fading back to black
       b = map(override_timer, 10, 0, 255, original);
-    } else {
+    }
+    else
+    {
       // Fading back to whatever we had before
       b = map(override_timer, 10, 0, 0, original);
     }
@@ -84,42 +100,56 @@ uint8 getBrightnessOverride(uint8 original) {
   return b;
 }
 
-void figureOutWhatToShow() {
+void figureOutWhatToShow()
+{
   uint8 brightness;
   uint8 final_brightness;
   uint8 h = getHour();
   int wakeup_hour = getWakeupHour();
 
-  if (h >= 0 && h < wakeup_hour) {
+  if (h >= 0 && h < wakeup_hour)
+  {
     final_brightness = getBrightnessOverride(0);
     FastLED.setBrightness(final_brightness);
     pacifica_loop();
-  } else if (h >= wakeup_hour && h < wakeup_hour + 1) {
+  }
+  else if (h >= wakeup_hour && h < wakeup_hour + 1)
+  {
     brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 0, 255);
     final_brightness = getBrightnessOverride(brightness);
     FastLED.setBrightness(final_brightness);
     pacifica_loop();
-  } else if (h >= wakeup_hour + 1 && h < 21) {
+  }
+  else if (h >= wakeup_hour + 1 && h < 21)
+  {
     final_brightness = getBrightnessOverride(255);
     FastLED.setBrightness(final_brightness);
     plasma();
-  } else if (h >= 21 && h < 22) {
+  }
+  else if (h >= 21 && h < 22)
+  {
     brightness = map(getMinuteOfTheHour() * 60 + getSecond(), 0, 3600, 255, 0);
     final_brightness = getBrightnessOverride(brightness);
     FastLED.setBrightness(final_brightness);
     flame_loop();
-  } else {
+  }
+  else
+  {
     final_brightness = getBrightnessOverride(0);
     FastLED.setBrightness(final_brightness);
     flame_loop();
   }
 }
 
-void toggleOverride() {
-  if (override_timer == 0) {
+void toggleOverride()
+{
+  if (override_timer == 0)
+  {
     // Toggling in
     override_timer = 3600;
-  } else {
+  }
+  else
+  {
     // Toggling out, give us some seconds to wakeup
     override_timer = 10;
   }
@@ -131,16 +161,19 @@ void loop()  {
   FastLED.show();
   FastLED.delay(1000 / 60);
   wifiEvents();
-  if (isTouched()) {
+  if (isTouched())
+  {
     Serial.println("I got touched!");
     toggleOverride();
   }
-  EVERY_N_SECONDS( 3600 ) {
+  EVERY_N_SECONDS(3600)
+  {
     syncTimeFromWifi();
   }
 }
 
-void setupSerial() {
+void setupSerial()
+{
   Serial.begin(115200);
   Serial.setDebugOutput(true);
   Serial.println();
@@ -151,23 +184,23 @@ void setupSerial() {
   Serial.printf("Sketch compiled %s\n", compile_date);
 }
 
-void setupStrip() {
+void setupStrip()
+{
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
-  .setCorrection( TypicalLEDStrip );
+      .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(255);
-  FastLED.setMaxPowerInVoltsAndMilliamps( 5, MAX_POWER_MILLIAMPS);
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);
 }
 
-
-
-void sunRiseSet () {
+void sunRiseSet()
+{
   Serial.println("xxxxxxxxxxxxxxxxxxxx");
   Serial.println(longitude);
   Serial.println(latitude);
 
   daylen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1);
   civlen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -6.0, 0);
-  rs = __sunriset__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1,  &rise, &set );
+  rs = __sunriset__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1, &rise, &set);
   //rise = rise + (config.timeZone / 10);
   //set = set + (config.timeZone / 10);
   /*
@@ -176,10 +209,10 @@ void sunRiseSet () {
     set += 1;
     }
   */
-  string_rise = string_rs (rise);
-  string_set = string_rs (set);
+  string_rise = string_rs(rise);
+  string_set = string_rs(set);
   twilight = (civlen - daylen) / 2.0;
-  string_twilight = string_rs (twilight);
+  string_twilight = string_rs(twilight);
 
   Serial.println("--------------");
   Serial.println(string_rise);
