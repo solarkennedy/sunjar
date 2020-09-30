@@ -24,16 +24,6 @@ uint8_t gHue = 0; // rotating "base color" used by many of the patterns
 
 CRGBPalette16 gPal;
 
-long latitude = 37.7749;
-long longitude = -122.4194;
-String sunrise;
-String sunset;
-//String twilight;
-double daylen, civlen;
-double rise, set, twilight;
-int rs;
-String string_rise, string_set, string_twilight;
-
 bool override_mode = false;
 int override_timer = 0;
 int override_duration = 3600;
@@ -189,32 +179,4 @@ void setupStrip()
   .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(255);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);
-}
-
-void sunRiseSet()
-{
-  Serial.println("xxxxxxxxxxxxxxxxxxxx");
-  Serial.println(longitude);
-  Serial.println(latitude);
-
-  daylen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1);
-  civlen = __daylen__(getYear(), getMonth(), getDay(), longitude, latitude, -6.0, 0);
-  rs = __sunriset__(getYear(), getMonth(), getDay(), longitude, latitude, -35.0 / 60.0, 1, &rise, &set);
-  //rise = rise + (config.timeZone / 10);
-  //set = set + (config.timeZone / 10);
-  /*
-    if (config.isDayLightSaving && summerTime(absoluteActualTime)) {
-    rise += 1;
-    set += 1;
-    }
-  */
-  string_rise = string_rs(rise);
-  string_set = string_rs(set);
-  twilight = (civlen - daylen) / 2.0;
-  string_twilight = string_rs(twilight);
-
-  Serial.println("--------------");
-  Serial.println(string_rise);
-  Serial.println(string_set);
-  Serial.println(string_twilight);
 }
