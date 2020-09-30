@@ -1,5 +1,5 @@
 #include <CapacitiveSensor.h>
-CapacitiveSensor touch_sensor = CapacitiveSensor(D4, D5);
+CapacitiveSensor touch_sensor = CapacitiveSensor(D5, D6);
 bool touched = false;
 
 void setupTouchSensor() {

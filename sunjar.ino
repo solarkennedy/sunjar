@@ -5,18 +5,18 @@
 #define COOLING 20 // defines the level at which the lighting effect fades before a new "flame" generates
 #define SPARKING 20
 
+#define FASTLED_ALLOW_INTERRUPTS 0
+#define FASTLED_INTERRUPT_RETRY_COUNT 1
 #include <FastLED.h>
-
-FASTLED_USING_NAMESPACE
 
 int wait = 0;
 int faderate = 40000;
 
-#define DATA_PIN D6
-#define NUM_LEDS 5
+#define DATA_PIN 0
+#define NUM_LEDS 8
 #define MAX_POWER_MILLIAMPS 50000
 #define LED_TYPE WS2812B
-#define COLOR_ORDER RGB
+#define COLOR_ORDER GRB
 
 CRGB leds[NUM_LEDS];
 
@@ -187,7 +187,7 @@ void setupSerial()
 void setupStrip()
 {
   FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS)
-      .setCorrection(TypicalLEDStrip);
+  .setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(255);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, MAX_POWER_MILLIAMPS);
 }
