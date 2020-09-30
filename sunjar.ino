@@ -159,7 +159,6 @@ void toggleOverride()
 void loop()  {
   figureOutWhatToShow();
   FastLED.show();
-  FastLED.delay(1000 / 60);
   wifiEvents();
   if (isTouched())
   {
