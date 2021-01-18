@@ -1,26 +1,18 @@
-#include <EEPROM.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
-
-char ssid[32] = "";
-char password[32] = "";
+#include <ESP8266HTTPClient.h>
+#include "secrets.h"
 
 void wifiEvents() {
   ArduinoOTA.handle();
 }
 
 void setupWifi() {
-  loadCredentials();
-
   Serial.println("Booting");
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  Serial.print("Connecting to: ");
-  Serial.println(ssid);
-  Serial.print("With password: ");
-  Serial.println(password);
+  WiFi.begin(WIFI_ESSID, WIFI_PASSWORD);
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     Serial.println("Connection Failed! Rebooting...");
     for (int i = 0; i < 25; i++ ) {
@@ -67,24 +59,34 @@ void setupWifi() {
     }
   });
   ArduinoOTA.begin();
+  sendPushNotification();
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
-void loadCredentials() {
-  EEPROM.begin(512);
-  EEPROM.get(0, ssid);
-  EEPROM.get(0 + sizeof(ssid), password);
-  char ok[2 + 1];
-  EEPROM.get(0 + sizeof(ssid) + sizeof(password), ok);
-  EEPROM.end();
-  if (String(ok) != String("OK")) {
-    ssid[0] = 0;
-    password[0] = 0;
+void sendPushNotification()
+{
+  Serial.println("Sending bootup push notification..");
+  BearSSL::WiFiClientSecure client;
+  client.setInsecure();
+  client.setTimeout(10000);
+  HTTPClient http;
+  http.begin(client, "gotify.xkyle.com", 443, "/message?token=" GOTIFY_TOKEN, true);
+  http.addHeader("Content-Type", "application/json");
+  uint16_t httpResponseCode;
+
+  httpResponseCode = http.POST("{\"message\": \"Sunjar Booted.\",\"title\": \"Sunjar Booted\",\"priority\": 1}");
+  if (httpResponseCode > 0)
+  {
+    String response = http.getString();
+    Serial.println(httpResponseCode);
+    Serial.println(response);
   }
-  Serial.println("Recovered credentials: ");
-  Serial.print(ssid);
-  Serial.print(" / ");
-  Serial.println(password);
+  else
+  {
+    Serial.print("Error on sending POST: ");
+    Serial.println(httpResponseCode);
+  }
+  http.end();
 }
