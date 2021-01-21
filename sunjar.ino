@@ -114,7 +114,8 @@ void figureOutWhatToShow()
   {
     final_brightness = getBrightnessOverride(255);
     FastLED.setBrightness(final_brightness);
-    plasma();
+    plasma(0, NUM_LEDS / 2);
+    plasma(NUM_LEDS / 2, NUM_LEDS);
   }
   else if (h >= 21 && h < 22)
   {
