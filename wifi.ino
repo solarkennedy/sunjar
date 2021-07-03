@@ -3,10 +3,17 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoHA.h>
 #include "secrets.h"
+
+HADevice device;
+WiFiClient wifiClient;
+HAMqtt mqtt(wifiClient, device);
+HALight led("SunJar", false);
 
 void wifiEvents() {
   ArduinoOTA.handle();
+  mqtt.loop();
 }
 
 void setupWifi() {
@@ -63,6 +70,7 @@ void setupWifi() {
   Serial.println("Ready");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  setupMQTT();
 }
 
 void sendPushNotification()
@@ -89,4 +97,22 @@ void sendPushNotification()
     Serial.println(httpResponseCode);
   }
   http.end();
+}
+
+void setupMQTT() {
+  device.setName("SunJar");
+  device.setAvailability(true);
+  byte mac[WL_MAC_ADDR_LENGTH];
+  WiFi.macAddress(mac);
+  device.setUniqueId(mac, sizeof(mac));
+  led.setName("Sunjar LEDs");
+  led.onStateChanged(onSwitchStateChanged);
+  mqtt.begin(MQTT_HOST);
+  Serial.print("Finished MQTT Setup with ");
+  Serial.println(MQTT_HOST);
+}
+
+void onSwitchStateChanged(bool state)
+{
+  RemoteToggle = state;
 }

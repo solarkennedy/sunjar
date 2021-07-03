@@ -11,6 +11,7 @@
 
 int wait = 0;
 int faderate = 40000;
+bool RemoteToggle = true;
 
 #define DATA_PIN 0
 #define NUM_LEDS 8
@@ -41,6 +42,9 @@ void setup() {
 
 uint8 getBrightnessOverride(uint8 original)
 {
+  if (! RemoteToggle) {
+    return 0;
+  }
   if (override_timer != 0)
   {
     EVERY_N_SECONDS(1)
@@ -49,10 +53,10 @@ uint8 getBrightnessOverride(uint8 original)
     }
   }
   int b;
-  Serial.print("Override timer: ");
-  Serial.print(override_timer);
-  Serial.print("  Mode: ");
-  Serial.println(override_mode);
+  //Serial.print("Override timer: ");
+  //Serial.print(override_timer);
+  //Serial.print("  Mode: ");
+  //Serial.println(override_mode);
   if (override_timer == 0)
   {
     b = original;
@@ -83,10 +87,10 @@ uint8 getBrightnessOverride(uint8 original)
       b = map(override_timer, 10, 0, 0, original);
     }
   }
-  Serial.print("Override brightness: ");
-  Serial.print(b);
-  Serial.print("  - original: ");
-  Serial.println(original);
+  //Serial.print("Override brightness: ");
+  //Serial.print(b);
+  //Serial.print("  - original: ");
+  //Serial.println(original);
   return b;
 }
 
